@@ -1,0 +1,35 @@
+from flask import Flask, render_template, request, jsonify
+from PIL import Image
+import cv2
+import numpy as np
+import base64
+from io import BytesIO
+import face_recognition
+import tensorflow as tf
+import os
+
+app = Flask(__name__)
+
+def detect_face_shape(image_array):
+    # Dummy model logic (you would replace this with a real model)
+    # Assume circular face for example purposes
+    return "Round"
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/detect', methods=['POST'])
+def detect():
+    file = request.files['image']
+    image = face_recognition.load_image_file(file)
+    face_locations = face_recognition.face_locations(image)
+
+    if len(face_locations) == 0:
+        return jsonify({'error': 'No face detected'})
+
+    face_shape = detect_face_shape(image)
+    return jsonify({'face_shape': face_shape})
+
+if __name__ == '__main__':
+    app.run(debug=True)
